@@ -1,0 +1,3 @@
+domain\Book.class
+com\europeandynamics\txttoxmlmanagement\TxtToXMLManagement.class
+services\TextToXml.class
