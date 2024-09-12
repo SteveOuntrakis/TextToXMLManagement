@@ -11,6 +11,8 @@
         <maven.compiler.target>21</maven.compiler.target>
         <exec.mainClass>com.europeandynamics.txttoxmlmanagement.TxtToXMLManagement</exec.mainClass>
         <lombok.version>1.18.34</lombok.version>
+        <logback.version>1.2.11</logback.version>
+        <jackson.version>2.17.2</jackson.version>
     </properties>
     <dependencies>
          <dependency>
@@ -19,6 +21,43 @@
 		<version>${lombok.version}</version>
 		<scope>provided</scope>
 	</dependency>
-    </dependencies>
-   
+        
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>         
+        <!-- xml manipulation -->
+        <!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>4.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>4.0.3</version>
+        </dependency>
+
+        <!-- json manipulation -->
+       <!-- Jackson Databind (includes ObjectMapper) -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <!-- Jackson Core (needed by Jackson Databind) -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <!-- Jackson Annotations (needed by Jackson Databind) -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+   </dependencies>
 </project>
