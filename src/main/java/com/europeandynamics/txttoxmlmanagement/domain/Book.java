@@ -6,11 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@XmlRootElement(name = "book")
+@XmlRootElement(name = "Book")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Book {
     private List<Chapter> chapter;
-
 }

@@ -1,39 +1,57 @@
 package com.europeandynamics.txttoxmlmanagement;
 
 import com.europeandynamics.txttoxmlmanagement.domain.Book;
-import com.europeandynamics.txttoxmlmanagement.domain.Chapter;
-import com.europeandynamics.txttoxmlmanagement.domain.Paragraph;
 import com.europeandynamics.txttoxmlmanagement.services.TextToXml;
-import com.europeandynamics.txttoxmlmanagement.services.XmlMarshalling;
-import com.europeandynamics.txttoxmlmanagement.services.XmlUmarshalling;
-import java.util.List;
+import com.europeandynamics.txttoxmlmanagement.services.BookHandler;
+import com.europeandynamics.txttoxmlmanagement.services.JaxbXmlValidation;
+import com.europeandynamics.txttoxmlmanagement.services.JaxbXsdGenerator;
+import java.io.IOException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  *
  * @author stef6
  */
+@Slf4j
 public class TxtToXMLManagement {
 
-    public static void main(String[] args) {
-        //Step one TxtToXml :
+    public static final String FILENAME = "book.xml";
+    public static final String PARAGRAPH = "paragraph.xml";
+    public static final String SCHEMA = "book-schema.xsd";
+
+    public static void main(String[] args) throws IOException {
+
+        //read a txt file and convert it to xml. Then show statistics.
         TextToXml textToXml = new TextToXml();
-        textToXml.TextToXmlConverter();
+        textToXml.TextToXmlConverter(FILENAME);
+
+        //read and write a specific paragraph from a specific chapter to a new xml file.
+        System.out.println("\n==================================================\n");
+        try {
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+            SAXParser saxParser = factory.newSAXParser();
+            log.info("Selecting paragraph...");
+            BookHandler handler = new BookHandler(3, 7, PARAGRAPH);
+            saxParser.parse(FILENAME, handler);
+            log.info("Saved the selected paragraph to : " + PARAGRAPH);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //We generate Xsd file through the domain classes.
+        System.out.println("\n==================================================\n");
+        JaxbXsdGenerator xsdGenerator= new JaxbXsdGenerator();
+        xsdGenerator.xsdGenerator();
         
-        //Step two , creating Xml writer - Marshaller:
-        List linesList1 = List.of("line1","line2","line3");
-        List linesList2 = List.of("line4","line5","line6");
-        Paragraph paragraph1 = new Paragraph(linesList1);
-        Paragraph paragraph2 = new Paragraph(linesList2);
-        List paraList = List.of(paragraph1,paragraph2);
-        
-        Chapter chapter1 = new Chapter(paraList);
-        List chapterList = List.of(chapter1,chapter1);
-        Book book = new Book(chapterList);
-        XmlMarshalling marshall= new XmlMarshalling();
-        marshall.createXML(book,"book_Marshaller.xml");
-        
-        //Step two continuation, creating Xml Reader - Unmarshaller:
-        XmlUmarshalling unmarshaller = new XmlUmarshalling();
-        unmarshaller.readXML("book_Marshaller.xml");
+        //Validating the xml and xsd file.
+        JaxbXmlValidation validator =  new JaxbXmlValidation();
+        boolean validity = validator.xmlValidator(PARAGRAPH,SCHEMA , Book.class);
+
+        if (validity) {
+            System.out.println("The file is valid");
+        } else {
+            System.out.println("The file is not valid");
+        }       
     }
 }
