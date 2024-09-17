@@ -1,7 +1,7 @@
 package com.europeandynamics.txttoxmlmanagement;
 
 import com.europeandynamics.txttoxmlmanagement.domain.Book;
-import com.europeandynamics.txttoxmlmanagement.services.TextToXml;
+import com.europeandynamics.txttoxmlmanagement.services.TextToXmlImpl;
 import com.europeandynamics.txttoxmlmanagement.services.BookHandler;
 import com.europeandynamics.txttoxmlmanagement.services.JaxbXmlValidation;
 import com.europeandynamics.txttoxmlmanagement.services.JaxbXsdGenerator;
@@ -24,7 +24,7 @@ public class TxtToXMLManagement {
     public static void main(String[] args) throws IOException {
 
         //read a txt file and convert it to xml. Then show statistics.
-        TextToXml textToXml = new TextToXml();
+        TextToXmlImpl textToXml = new TextToXmlImpl();
         textToXml.TextToXmlConverter(FILENAME);
 
         //read and write a specific paragraph from a specific chapter to a new xml file.
@@ -42,7 +42,7 @@ public class TxtToXMLManagement {
         //We generate Xsd file through the domain classes.
         System.out.println("\n==================================================\n");
         JaxbXsdGenerator xsdGenerator= new JaxbXsdGenerator();
-        xsdGenerator.xsdGenerator();
+        xsdGenerator.xsdGenerator(SCHEMA);
         
         //Validating the xml and xsd file.
         JaxbXmlValidation validator =  new JaxbXmlValidation();

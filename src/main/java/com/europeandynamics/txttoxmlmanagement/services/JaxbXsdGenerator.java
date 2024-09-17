@@ -11,19 +11,18 @@ import javax.xml.transform.stream.StreamResult;
 
 public class JaxbXsdGenerator {
 
-    public void xsdGenerator() throws IOException {
+    public void xsdGenerator(String xsdFileName) throws IOException {
         try {
-            String xsdFileName = "book-schema.xsd";
             JAXBContext context = JAXBContext.newInstance(Book.class);
             context.generateSchema(new MySchemaOutputResolver(xsdFileName));
         } catch (JAXBException e) {
-            e.printStackTrace();
+           e.getMessage();
         }
     }
 
     static class MySchemaOutputResolver extends SchemaOutputResolver {
 
-        private String xsdFileName;
+        private final String xsdFileName;
 
         public MySchemaOutputResolver(String xsdFileName) {
             this.xsdFileName = xsdFileName;

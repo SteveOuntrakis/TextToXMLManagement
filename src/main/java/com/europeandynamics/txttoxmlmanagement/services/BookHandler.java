@@ -2,6 +2,7 @@ package com.europeandynamics.txttoxmlmanagement.services;
 
 import java.io.FileWriter;
 import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import lombok.extern.slf4j.Slf4j;
 import org.xml.sax.Attributes;
@@ -14,9 +15,9 @@ public class BookHandler extends DefaultHandler {
     private boolean inParagraph = false;
     private int currentChapter = 0;
     private int currentParagraph = 0;
-    private int chapterNumber;
-    private int paragraphNumber;
-    private XMLStreamWriter writer;
+    private final int chapterNumber;
+    private final int paragraphNumber;
+    private final XMLStreamWriter writer;
 
     public BookHandler(int chapterNumber, int paragraphNumber, String outputFilename) throws Exception {
         this.chapterNumber = chapterNumber;
@@ -30,6 +31,7 @@ public class BookHandler extends DefaultHandler {
         writer.writeCharacters("\n");
     }
 
+    @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         try {
             if (qName.equalsIgnoreCase("chapter")) {
@@ -59,12 +61,13 @@ public class BookHandler extends DefaultHandler {
                 writer.writeCharacters("      ");
                 writer.writeStartElement("line");
             }
-        } catch (Exception e) {
+        } catch (NumberFormatException | XMLStreamException e) {
             log.info(e.getMessage());
         }
 
     }
 
+    @Override
     public void characters(char[] ch, int start, int length) {
         if (inChapter && inParagraph) {
             try {
@@ -72,12 +75,13 @@ public class BookHandler extends DefaultHandler {
                 if (!content.isEmpty()) {
                     writer.writeCharacters(content);
                 }
-            } catch (Exception e) {
+            } catch (XMLStreamException e) {
                 log.info(e.getMessage());
             }
         }
     }
 
+    @Override
     public void endElement(String uri, String localName, String qName) {
         try {
            if (inChapter && inParagraph && qName.equalsIgnoreCase("line")) {
@@ -97,11 +101,13 @@ public class BookHandler extends DefaultHandler {
                 inChapter = false;
             }
 
-        } catch (Exception e) {
+        } catch (XMLStreamException e) {
             log.info(e.getMessage());
         }
 
     }
+    
+    @Override
     public void endDocument() {
         try {
             writer.writeEndElement(); 
@@ -109,7 +115,7 @@ public class BookHandler extends DefaultHandler {
             writer.flush();
             writer.close();
             log.info("\nNew XML file created successfully with the selected paragraph.");
-        } catch (Exception e) {
+        } catch (XMLStreamException e) {
              log.info(e.getMessage());
         }
     }
